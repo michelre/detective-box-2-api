@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from schemas import Status
+from config import Settings
 
 app = FastAPI()
+settings = Settings()
 
 
 @app.get('/status')

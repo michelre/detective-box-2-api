@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from config import Settings
+from main import settings
 
-DATABASE_URI = Settings.database_uri
+DATABASE_URI = settings.database_uri
 
 engine = create_engine(
     DATABASE_URI, connect_args={"check_same_thread": False}
