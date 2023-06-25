@@ -41,7 +41,7 @@ jobs:
         ARGS: "-rlgoDzvc -i"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        TARGET: ${{ secrets.REMOTE_TARGET }}
+        TARGET: "/data/detective-box/api"
         EXCLUDE: "/venv/"
         SCRIPT_BEFORE: |
           whoami
