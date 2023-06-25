@@ -30,6 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Migrate database
       run: |
+        echo "DATABASE_URI=${{ secrets.DATABASE_URI }}" >> .env
         alembic upgrade head
 #    - name: Lint with flake8
       #run: |
