@@ -9,4 +9,4 @@ settings = Settings()
 @app.get('/status')
 def status() -> Status:
     """Send the status of the API"""
-    return {"status": "OK"}
+    return {"status": "OK", "description": ""}
