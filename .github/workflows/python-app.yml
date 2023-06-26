@@ -57,7 +57,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: production-files
-          path: dist
+          path: .
       - name: Deploy to server
         uses: easingthemes/ssh-deploy@main
         env:
