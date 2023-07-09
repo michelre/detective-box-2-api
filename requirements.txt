@@ -3,3 +3,9 @@ uvicorn[standard]
 SQLAlchemy
 alembic
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+flake8
+black
+psycopg2
+pydantic[email]
