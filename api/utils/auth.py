@@ -7,25 +7,9 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status
 from api.config import settings
-from fastapi.requests import Request
-from starlette.status import HTTP_401_UNAUTHORIZED
-
-
-class OAuth2PasswordQuery:
-    def __call__(self, request: Request):
-        token = request.query_params.get('token')
-        if not token:
-            raise HTTPException(
-                status_code=HTTP_401_UNAUTHORIZED,
-                detail="Not authenticated",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        return token
-
 
 pwd_context = CryptContext(schemes=["bcrypt"])
 oauth2_password = OAuth2PasswordBearer(tokenUrl="token")
-oauth2_query = OAuth2PasswordQuery()
 
 
 def verify_password(password: str, hash: str):
@@ -69,18 +53,6 @@ def is_connected_admin(
         key: Annotated[str, Depends(oauth2_password)]
 ):
     if settings.admin_token != key:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="super_admin_operation"
-        )
-
-    return True
-
-
-def is_connected_admin_query(
-        token: Annotated[str, Depends(oauth2_query)]
-):
-    if settings.admin_token != token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="super_admin_operation"
