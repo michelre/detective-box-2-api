@@ -9,3 +9,5 @@ flake8
 black
 psycopg2
 pydantic[email]
+pydantic-settings
+boto3

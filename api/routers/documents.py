@@ -1,18 +1,19 @@
-from fastapi import APIRouter
-from fastapi.responses import FileResponse
-from os import getcwd
-from fastapi import Depends
-from typing import Annotated
-from api.utils.auth import is_connected_admin_query
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse, StreamingResponse
 
 router = APIRouter(prefix='/documents')
+from api.utils.storage import Storage
 
 
 @router.get('/{file_name}', response_class=FileResponse)
 def get(
         file_name,
-        token: Annotated[str, Depends(is_connected_admin_query)]
-) -> FileResponse:
+        # token: Annotated[str, Depends(is_connected_admin_query)]
+) -> StreamingResponse:
     """Send a document"""
-    file_path = f'{getcwd()}/assets/{file_name}'
-    return file_path
+    storage = Storage()
+    file = storage.get(file_name)
+    if file:
+        return StreamingResponse(content=file['Body'].iter_chunks())
+
+    raise HTTPException(status_code=404)

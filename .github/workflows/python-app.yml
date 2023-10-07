@@ -33,6 +33,10 @@ jobs:
         echo "DATABASE_URI=${{ secrets.DATABASE_URI }}" >> .env
         echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
         echo "ADMIN_TOKEN=${{ secrets.ADMIN_TOKEN }}" >> .env
+        echo "AWS_ENDPOINT_URL=${{ secrets.AWS_ENDPOINT_URL }}" >> .env
+        echo "AWS_KEY_ID=${{ secrets.AWS_KEY_ID }}" >> .env
+        echo "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" >> .env
+        echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
