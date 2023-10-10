@@ -5,14 +5,14 @@ router = APIRouter(prefix='/documents')
 from api.utils.storage import Storage
 
 
-@router.get('/{file_name}', response_class=FileResponse)
+@router.get('/', response_class=FileResponse)
 def get(
-        file_name,
+        name
         # token: Annotated[str, Depends(is_connected_admin_query)]
 ) -> StreamingResponse:
     """Send a document"""
     storage = Storage()
-    file = storage.get(file_name)
+    file = storage.get(name)
     if file:
         return StreamingResponse(content=file['Body'].iter_chunks())
 
