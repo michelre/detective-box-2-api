@@ -14,3 +14,11 @@ class UserCreate(UserBase):
 class User(UserCreate):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserUpdate(BaseModel):
+    email: EmailStr
+    name: str
+
+class UserUpdatePass(BaseModel):
+    password: str

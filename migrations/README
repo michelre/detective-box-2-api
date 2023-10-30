@@ -1,1 +1,13 @@
 Generic single-database configuration.
+
+
+
+
+{
+					"id": 1,
+					"text": [
+						"Tout d'abord, regardons si on ne pourrait pas relier un paragraphe du poème à un dossier en particulier.",
+						"Celui-là parle d'une femme et d'un billet de loterie.",
+					],
+					"image": null
+				}

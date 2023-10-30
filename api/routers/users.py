@@ -11,6 +11,62 @@ from api.utils import auth as auth_utils
 
 router = APIRouter(prefix="/users")
 
+@router.put(
+    path="/password",
+    response_model=user_schemas.User
+)
+def update(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        user: user_schemas.UserUpdatePass,
+        db: Session = Depends(get_db),
+):
+    try:
+        exists = db \
+            .query(user_models.User) \
+            .filter_by(id=user_id) \
+            .first()
+        if not exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="user_not_exists"
+            )
+
+        exists.password = auth_utils.get_password_hash(user.password)
+        db.commit()
+
+        return exists
+    except HTTPException as e:
+        raise e
+
+@router.put(
+    path="/{id}",
+    response_model=user_schemas.User
+)
+def update(
+        id: int,
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        user: user_schemas.UserUpdate,
+        db: Session = Depends(get_db),
+):
+    try:
+        exists = db \
+            .query(user_models.User) \
+            .filter_by(id=id) \
+            .first()
+        if not exists:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="user_not_exists"
+            )
+
+        exists.name = user.name
+        exists.email = user.email
+        db.commit()
+
+        return exists
+    except HTTPException as e:
+        raise e
+
 
 @router.get(
     path="/me",

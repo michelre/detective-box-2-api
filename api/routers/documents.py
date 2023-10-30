@@ -17,3 +17,12 @@ def get(
         return StreamingResponse(content=file['Body'].iter_chunks())
 
     raise HTTPException(status_code=404)
+
+@router.get('/list')
+def get_list():
+    storage = Storage()
+    objects = []
+    for object in storage.list()['Contents']:
+        objects.append(object['Key'])
+
+    return objects

@@ -21,3 +21,9 @@ class Storage:
             )
         except Exception:
             return None
+
+    def list(self):
+        try:
+            return self.client.list_objects(Bucket=settings.aws_bucket)
+        except Exception:
+            return None
