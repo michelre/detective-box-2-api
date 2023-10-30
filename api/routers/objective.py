@@ -13,7 +13,7 @@ router = APIRouter(prefix="/objectives")
 
 @router.get(path='/')
 def get(
-        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ) -> List[Help]:
     return db.query(objective_models.Objective).all()

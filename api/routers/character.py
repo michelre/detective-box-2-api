@@ -14,7 +14,7 @@ router = APIRouter(prefix="/characters")
 
 @router.get(path='/')
 def get(
-        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ) -> List[Help]:
     return db.query(character_models.Character).all()
