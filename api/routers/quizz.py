@@ -36,6 +36,20 @@ def get_by_id(
 
     return None
 
+
+@router.put(path='/reset')
+def reset(
+        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        db: Session = Depends(get_db),
+):
+    quizzs = db.query(quizz_models.Quizz).all()
+    for q in quizzs:
+        q.status = False
+
+    db.commit()
+    return 'OK'
+
+
 @router.put(path='/{id}')
 def update_status(
         id: int,

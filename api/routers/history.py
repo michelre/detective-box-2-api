@@ -14,13 +14,28 @@ router = APIRouter(prefix="/history")
 
 @router.get(path='/{box_id}')
 def get_by_box(
-        #user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         box_id: str,
         db: Session = Depends(get_db),
 ):
-    return db.query(history_models.History)\
-        .filter_by(box_id=box_id)\
+    return db.query(history_models.History) \
+        .filter_by(box_id=box_id) \
         .all()
+
+
+@router.put(path='/reset')
+def reset(
+        db: Session = Depends(get_db),
+):
+    data = db.query(history_models.History).all()
+
+    for d in data:
+        for e in d.data:
+            e['status'] = False
+
+        flag_modified(d, "data")
+    db.commit()
+    return "OK"
 
 
 @router.put(path='/{box_id}')

@@ -23,13 +23,29 @@ def get(
 
 @router.get(path='/{id}')
 def get_by_character(
-    id: int,
-    db: Session = Depends(get_db),
+        id: int,
+        db: Session = Depends(get_db),
 ):
     # TODO: Retourne la liste des data
     return db.query(character_models.RequestCharacter) \
         .filter_by(character_id=id) \
         .all()
+
+
+@router.put(path='/reset')
+def reset(
+        db: Session = Depends(get_db),
+):
+    data = db.query(character_models.RequestCharacter).all()
+
+    for d in data:
+        for e in d.data:
+            e['status'] = False
+
+        flag_modified(d, "data")
+    db.commit()
+    return "OK"
+
 
 @router.put(path='/{character_id}/{box_id}')
 def update_status(
