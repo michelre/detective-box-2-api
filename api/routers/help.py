@@ -23,56 +23,85 @@ def get(
 
 @router.get(path='/{box_id}')
 def get_by_box(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         box_id: int,
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    return db \
+    help = db \
         .query(help_models.Help) \
         .filter_by(box_id=box_id) \
-        .all()
+        .first()
+
+    for d in help.data:
+        exists = db\
+            .query(help_models.HelpUser)\
+            .filter_by(help_id=help.id)\
+            .filter_by(user_id=user_id)\
+            .filter_by(ref_data=d['id'])\
+            .first()
+
+        if exists:
+            d['status'] = exists.status
+
+    return help
 
 
 @router.put(path='/reset')
 def reset(
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ) -> str:
-    data = db.query(help_models.Help).all()
+    data = db.query(help_models.HelpUser)\
+        .filter_by(user_id=user_id)\
+        .all()
 
     for d in data:
-        for e in d.data:
-            if not in_array([
-                'box1help1', 'box1help2', 'box1help3',
-                'box2help1',
-                'box3help1', 'box3help2',
-            ], e['id']):
-                e['status'] = 'closed'
-            else:
-                e['status'] = 'open'
+        db.delete(d)
 
-        flag_modified(d, "data")
     db.commit()
 
     return 'OK'
 
-@router.put(path='/{id}')
-def update(
-        id: int,
+
+@router.put(path='/{box_id}')
+def update_status(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        box_id: int,
+        id: str,
         new_status: Status,
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
-) -> Status:
-    exists = db.query(help_models.Help) \
-        .filter_by(id=id) \
+):
+    data = db.query(help_models.Help) \
+        .filter_by(box_id=box_id) \
+        .first()
+
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    found = None
+    for idx, d in enumerate(data.data):
+        if d['id'] == id:
+            found = idx
+
+    if found is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    exists = db.query(help_models.HelpUser) \
+        .filter_by(help_id=data.id) \
+        .filter_by(user_id=user_id) \
+        .filter_by(ref_data=str(id)) \
         .first()
 
     if not exists:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="user_not_exists"
+        new = help_models.HelpUser(
+            user_id=user_id,
+            help_id=data.id,
+            ref_data=id,
+            status=new_status.status
         )
+        db.add(new)
+    else:
+        exists.status = new_status.status
 
-    exists.status = new_status.status
     db.commit()
-    return exists
+    return 'OK'
