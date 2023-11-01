@@ -12,8 +12,5 @@ class Help(Base):
     __tablename__ = "help"
 
     id = Column(Integer, primary_key=True, index=True)
-    ref = Column(String)
-    title = Column(String)
-    status = Column(Enum(HelpStatus))
-    hints = Column(JSONB, default='[]')
+    data = Column(JSONB, default=[])
     box_id = Column(Integer, ForeignKey('box.id'))
