@@ -6,6 +6,7 @@ from sqlalchemy.orm.attributes import flag_modified
 from api.database import get_db
 from api.models import character as character_models
 from api.utils import auth as auth_utils
+from api.utils import in_array
 
 from api.schemas.help import Help
 
@@ -46,7 +47,9 @@ def update_status(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     for d in data.data:
-        if d['ask'] == answer:
+        if type(d['ask']) == str and d['ask'] == answer:
+            d['status'] = True
+        if not type(d['ask']) == str and in_array(d['ask'], answer):
             d['status'] = True
 
     flag_modified(data, "data")
