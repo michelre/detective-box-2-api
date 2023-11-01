@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Annotated, List
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import flag_modified
@@ -32,6 +32,9 @@ def update_status(
     data = db.query(history_models.History) \
         .filter_by(box_id=box_id) \
         .first()
+
+    if not data:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     for d in data.data:
         if d['id'] == id:
