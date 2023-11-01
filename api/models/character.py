@@ -1,9 +1,17 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship, Mapped
 
 from api.database import Base
 from api.models.box import Box
+
+
+class RequestCharacterUser(Base):
+    __tablename__ = "request_character_user"
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    request_character_id = Column(Integer, ForeignKey("request_character.id"), primary_key=True)
+    ref_data = Column(String)
+    status = Column(Boolean)
 
 
 class RequestCharacter(Base):
