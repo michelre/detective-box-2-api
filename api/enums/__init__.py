@@ -13,8 +13,13 @@ class HelpStatus(str, enum.Enum):
     done = 'done'
 
 
-class ObjectiveStatus(str, enum.Enum):
+class EventStatus(str, enum.Enum):
     open = 'open'
     closed = 'closed'
     done = 'done'
 
+
+class ObjectiveStatus(str, enum.Enum):
+    open = 'open'
+    closed = 'closed'
+    done = 'done'
