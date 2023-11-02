@@ -11,6 +11,14 @@ from api.utils import in_array
 router = APIRouter(prefix="/characters")
 
 
+@router.get(path='/')
+def get(
+        #user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        db: Session = Depends(get_db),
+):
+    return db.query(character_models.Character) \
+        .all()
+
 @router.get(path='/{id}')
 def get_by_character(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
@@ -69,11 +77,14 @@ def update_status(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     found = None
+    found_data = None
     for idx, d in enumerate(data.data):
         if type(d['ask']) == str and d['ask'] == answer:
             found = idx
+            found_data = d
         if not type(d['ask']) == str and in_array(d['ask'], answer):
             found = idx
+            found_data = d
 
     if found is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -96,4 +107,4 @@ def update_status(
         exists.status = True
 
     db.commit()
-    return 'OK'
+    return found_data

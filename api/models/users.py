@@ -7,15 +7,6 @@ from api.models.box import Box
 from typing import List
 
 
-class UserBox(Base):
-    __tablename__ = "user_box"
-
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    box_id = Column(Integer, ForeignKey("box.id"), primary_key=True)
-    status = Column(Enum(BoxStatus))
-
-
-
 class User(Base):
     __tablename__ = "users"
 
@@ -23,4 +14,4 @@ class User(Base):
     email = Column(String)
     name = Column(String)
     password = Column(String)
-    boxes: Mapped[List[Box]] = relationship(UserBox)
+    # boxes: Mapped[List[Box]] = relationship(UserBox)

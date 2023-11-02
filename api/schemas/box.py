@@ -8,3 +8,7 @@ class Box(BaseModel):
     cover: str | None
     status: BoxStatus
     model_config = ConfigDict(from_attributes=True)
+
+
+class BoxStatus(BaseModel):
+    status: BoxStatus

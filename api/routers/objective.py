@@ -11,27 +11,30 @@ from api.utils import auth as auth_utils
 router = APIRouter(prefix="/objectives")
 
 
-@router.get(path='/')
+@router.get(path='/{box_id}')
 def get(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        box_id: int,
         db: Session = Depends(get_db),
 ):
 
-    objectives = db.query(objective_models.Objective).all()
+    o = db.query(objective_models.Objective).filter_by(box_id=box_id).first()
 
-    for o in objectives:
-        for d in o.data:
-            exists = db\
-                .query(objective_models.ObjectiveUser)\
-                .filter_by(objective_id=o.id)\
-                .filter_by(user_id=user_id)\
-                .filter_by(ref_data=str(d['id']))\
-                .first()
+    if not o:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-            if exists:
-                d['status'] = exists.status
+    for d in o.data:
+        exists = db\
+            .query(objective_models.ObjectiveUser)\
+            .filter_by(objective_id=o.id)\
+            .filter_by(user_id=user_id)\
+            .filter_by(ref_data=str(d['id']))\
+            .first()
 
-    return objectives
+        if exists:
+            d['status'] = exists.status
+
+    return o
 
 
 @router.put(path='/reset')
