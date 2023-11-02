@@ -5,3 +5,6 @@ from api.enums import BoxStatus
 class Objective(BaseModel):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+class ObjectiveStatus(BaseModel):
+    status: str

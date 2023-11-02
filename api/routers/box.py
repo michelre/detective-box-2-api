@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from api.database import get_db
 from api.models import box as box_models
+from api.schemas import box as box_schemas
 from api.utils import auth as auth_utils
 from api.enums import BoxStatus
 
@@ -14,45 +15,63 @@ router = APIRouter(prefix="/box")
 
 @router.get(path='/')
 def get(
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    return db.query(box_models.Box).all()
+    box = db.query(box_models.Box).all()
+    for b in box:
+        b_user = db.query(box_models.UserBox) \
+            .filter_by(user_id=user_id) \
+            .filter_by(box_id=b.id) \
+            .first()
 
+        if b_user:
+            b.status = b_user.status
+
+    return box
+
+
+@router.put(path='/reset')
+def reset(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        db: Session = Depends(get_db),
+):
+    boxes = db.query(box_models.UserBox).filter_by(user_id=user_id).all()
+    for box in boxes:
+        db.delete(box)
+
+    db.commit()
+    return 'OK'
 
 @router.put(path='/{id}')
-def update(
+def update_status(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         id: int,
-        box: Box,
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        status: box_schemas.BoxStatus,
         db: Session = Depends(get_db),
-) -> Box:
-    exists = db.query(box_models.Box) \
-        .filter_by(id=id) \
-        .first()
+):
+    box_exists = db.query(box_models.Box).filter_by(id=id).first()
 
-    if not exists:
+    if not box_exists:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="user_not_exists"
         )
 
-    exists.status = box.status
-    db.commit()
-    return exists
+    status_exists = db.query(box_models.UserBox) \
+        .filter_by(box_id=id) \
+        .filter_by(user_id=user_id) \
+        .first()
 
-
-@router.put(path='/reset')
-def reset(
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
-        db: Session = Depends(get_db),
-):
-    boxes = db.query(box_models.Box).all()
-    for box in boxes:
-        if box.id == 1:
-            box.status = BoxStatus.open
-        else:
-            box.status = BoxStatus.closed
+    if not status_exists:
+        new = box_models.UserBox(
+            box_id=id,
+            user_id=user_id,
+            status=status.status
+        )
+        db.add(new)
+    else:
+        status_exists.status = status.status
 
     db.commit()
-    return boxes
+    return 'OK'

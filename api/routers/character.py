@@ -1,54 +1,68 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Annotated, List
 from sqlalchemy.orm import Session
-from sqlalchemy.orm.attributes import flag_modified
 
 from api.database import get_db
 from api.models import character as character_models
 from api.utils import auth as auth_utils
 from api.utils import in_array
 
-from api.schemas.help import Help
-
 router = APIRouter(prefix="/characters")
 
 
 @router.get(path='/')
 def get(
-        # user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        #user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
-) -> List[Help]:
-    return db.query(character_models.Character).all()
-
+):
+    return db.query(character_models.Character) \
+        .all()
 
 @router.get(path='/{id}')
 def get_by_character(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         id: int,
         db: Session = Depends(get_db),
 ):
-    # TODO: Retourne la liste des data
-    return db.query(character_models.RequestCharacter) \
+    data = db.query(character_models.RequestCharacter) \
         .filter_by(character_id=id) \
         .all()
+
+    for d in data:
+        for idx, e in enumerate(d.data):
+
+            status_found = db.query(character_models.RequestCharacterUser)\
+                .filter_by(request_character_id=d.id)\
+                .filter_by(user_id=user_id)\
+                .filter_by(ref_data=str(idx))\
+                .first()
+
+            if status_found:
+                e['status'] = status_found.status
+
+    return data
 
 
 @router.put(path='/reset')
 def reset(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    data = db.query(character_models.RequestCharacter).all()
+    data = db.query(character_models.RequestCharacterUser)\
+        .filter_by(user_id=user_id)\
+        .all()
 
     for d in data:
-        for e in d.data:
-            e['status'] = False
+        db.delete(d)
 
-        flag_modified(d, "data")
     db.commit()
     return "OK"
 
 
 @router.put(path='/{character_id}/{box_id}')
 def update_status(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         character_id: int,
         box_id: int,
         answer: str,
@@ -62,12 +76,35 @@ def update_status(
     if not data:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-    for d in data.data:
+    found = None
+    found_data = None
+    for idx, d in enumerate(data.data):
         if type(d['ask']) == str and d['ask'] == answer:
-            d['status'] = True
+            found = idx
+            found_data = d
         if not type(d['ask']) == str and in_array(d['ask'], answer):
-            d['status'] = True
+            found = idx
+            found_data = d
 
-    flag_modified(data, "data")
+    if found is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    exists = db.query(character_models.RequestCharacterUser) \
+        .filter_by(request_character_id=data.id) \
+        .filter_by(user_id=user_id) \
+        .filter_by(ref_data=str(found)) \
+        .first()
+
+    if not exists:
+        new = character_models.RequestCharacterUser(
+            user_id=user_id,
+            request_character_id=data.id,
+            ref_data=found,
+            status=True
+        )
+        db.add(new)
+    else:
+        exists.status = True
+
     db.commit()
-    return data
+    return found_data
