@@ -2,14 +2,19 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from password_generator import PasswordGenerator
+from mailjet_rest import Client
 
 from api.database import get_db
 from api.models import users as user_models
 from api.schemas import auth as auth_schemas
 from api.schemas import users as user_schemas
 from api.utils import auth as auth_utils
+from api.config import settings
+
 
 router = APIRouter(prefix="/users")
+
 
 @router.put(
     path="/password",
@@ -37,6 +42,7 @@ def update(
         return exists
     except HTTPException as e:
         raise e
+
 
 @router.put(
     path="/{id}",
@@ -143,3 +149,55 @@ def login(
         "access_token": auth_utils.create_access_token({"id": exists.id}),
         "token_type": "bearer",
     }
+
+
+@router.post(
+    path="/forgot_password",
+    summary="Forgot Password",
+    response_model=str
+)
+def password_forgot(
+        email: user_schemas.UserForgotPassword,
+        db: Session = Depends(get_db)
+):
+    exists: user_schemas.User = (
+        db.query(user_models.User).filter_by(email=email.email).first()
+    )
+
+    if not exists:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="user_not_found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    pwo = PasswordGenerator()
+    temp_password = pwo.generate()
+    exists.password = auth_utils.get_password_hash(temp_password)
+
+
+    mailjet_api = Client(auth=(settings.mail_key, settings.mail_secret), version='v3.1')
+    data = data = {
+      'Messages': [
+                    {
+                            "From": {
+                                    "Email": "contact@detectivebox.fr",
+                                    "Name": "Detective Box"
+                            },
+                            "To": [
+                                    {
+                                            "Email": exists.email,
+                                            "Name": exists.name
+                                    }
+                            ],
+                            "Subject": "Réinitialisation de votre mot de passe",
+                            "TextPart": f"Bonjour {exists.name}, Voici votre mot de passe temporaire {temp_password}",
+                            "HTMLPart": f"<h3>Bonjour {exists.name},</h3><p>Votre mot de passe temporaire: {temp_password}</p>"
+                    }
+            ]
+    }
+
+    mailjet_api.send.create(data=data)
+    db.commit()
+
+    return 'OK'

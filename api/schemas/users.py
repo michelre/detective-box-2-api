@@ -20,5 +20,11 @@ class UserUpdate(BaseModel):
     email: EmailStr
     name: str
 
+
 class UserUpdatePass(BaseModel):
     password: str
+
+
+class UserForgotPassword(BaseModel):
+    email: str
+    pass

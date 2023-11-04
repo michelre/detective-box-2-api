@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     aws_key_id: str
     aws_secret_key: str
     aws_bucket: str
+    mail_key: str
+    mail_secret: str
     model_config = ConfigDict(env_file=".env")
 
 
