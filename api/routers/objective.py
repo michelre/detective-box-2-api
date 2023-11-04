@@ -28,7 +28,7 @@ def get(
             .query(objective_models.ObjectiveUser)\
             .filter_by(objective_id=o.id)\
             .filter_by(user_id=user_id)\
-            .filter_by(ref_data=d['id'])\
+            .filter_by(ref_data=str(d['id']))\
             .first()
 
         if exists:
