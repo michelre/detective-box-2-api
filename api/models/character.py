@@ -10,7 +10,7 @@ class RequestCharacterUser(Base):
     __tablename__ = "request_character_user"
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     request_character_id = Column(Integer, ForeignKey("request_character.id"), primary_key=True)
-    ref_data = Column(String)
+    ref_data = Column(String,  primary_key=True)
     status = Column(Boolean)
 
 

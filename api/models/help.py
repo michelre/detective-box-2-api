@@ -9,7 +9,7 @@ class HelpUser(Base):
     __tablename__ = "help_user"
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     help_id = Column(Integer, ForeignKey("help.id"), primary_key=True)
-    ref_data = Column(String)
+    ref_data = Column(String,  primary_key=True)
     status = Column(Enum(HelpStatus))
 
 class Help(Base):

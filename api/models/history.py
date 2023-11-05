@@ -9,7 +9,7 @@ class HistoryUser(Base):
     __tablename__ = "history_user"
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     history_id = Column(Integer, ForeignKey("history.id"), primary_key=True)
-    ref_data = Column(String)
+    ref_data = Column(String,  primary_key=True)
     status = Column(Boolean)
 
 

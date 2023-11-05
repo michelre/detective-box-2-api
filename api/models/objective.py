@@ -8,10 +8,9 @@ from api.models.box import Box
 
 class ObjectiveUser(Base):
     __tablename__ = "objective_user"
-
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     objective_id = Column(Integer, ForeignKey("objective.id"), primary_key=True)
-    ref_data = Column(Integer)
+    ref_data = Column(Integer,  primary_key=True)
     status = Column(String)
 
 

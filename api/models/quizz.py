@@ -8,7 +8,6 @@ from api.models.box import Box
 
 class QuizzUser(Base):
     __tablename__ = "quizz_user"
-
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     quizz_id = Column(Integer, ForeignKey("quizz.id"), primary_key=True)
     status = Column(Boolean)
