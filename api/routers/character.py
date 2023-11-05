@@ -75,12 +75,15 @@ def update_status(
     found = None
     found_data = None
     for idx, d in enumerate(data.data):
-        if type(d['ask']) == str and d['ask'] == answer:
-            found = idx
+        if answer == ",".join(d['ask']):
+            found = 0
             found_data = d
-        if not type(d['ask']) == str and in_array(d['ask'], answer):
-            found = idx
-            found_data = d
+        # if type(d['ask']) == str and d['ask'] == answer:
+        #     found = idx
+        #     found_data = d
+        # if not type(d['ask']) == str and in_array(d['ask'], answer):
+        #     found = idx
+        #     found_data = d
 
     if found is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
