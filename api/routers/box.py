@@ -36,11 +36,8 @@ def reset(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    boxes = db.query(box_models.UserBox).filter_by(user_id=user_id).all()
-    for box in boxes:
-        db.delete(box)
-
-    db.commit()
+    box = box_models.UserBox()
+    box.reset(db, user_id)
     return 'OK'
 
 @router.put(path='/{id}/')

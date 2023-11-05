@@ -41,14 +41,8 @@ def reset(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    data = db.query(history_models.HistoryUser) \
-        .filter_by(user_id=user_id) \
-        .all()
-
-    for d in data:
-        db.delete(d)
-
-    db.commit()
+    history = history_models.HistoryUser()
+    history.reset(db, user_id)
 
     return 'OK'
 

@@ -49,14 +49,9 @@ def reset(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    data = db.query(character_models.RequestCharacterUser)\
-        .filter_by(user_id=user_id)\
-        .all()
+    character = character_models.RequestCharacter()
+    character.reset(db, user_id)
 
-    for d in data:
-        db.delete(d)
-
-    db.commit()
     return "OK"
 
 

@@ -16,6 +16,16 @@ class HistoryUser(Base):
         "primary_key": ['user_id', 'history_id', 'ref_data']
     }
 
+    def reset(self, db, user_id):
+        data = db.query(HistoryUser) \
+            .filter_by(user_id=user_id) \
+            .all()
+
+        for d in data:
+            db.delete(d)
+
+        db.commit()
+
 
 class History(Base):
     __tablename__ = "history"

@@ -12,6 +12,16 @@ class QuizzUser(Base):
     quizz_id = Column(Integer, ForeignKey("quizz.id"), primary_key=True)
     status = Column(Boolean)
 
+    def reset(self, db, user_id):
+        quizzs = db.query(QuizzUser) \
+            .filter_by(user_id=user_id) \
+            .all()
+
+        for q in quizzs:
+            db.delete(q)
+
+        db.commit()
+
 
 class Quizz(Base):
     __tablename__ = "quizz"

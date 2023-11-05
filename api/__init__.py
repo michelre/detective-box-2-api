@@ -12,6 +12,7 @@ from api.routers.objective import router as objective_router
 from api.routers.history import router as history_router
 from api.routers.character import router as character_router
 from api.routers.event import router as event_router
+from api.routers.game import router as game_router
 
 app = FastAPI()
 
@@ -34,3 +35,4 @@ app.include_router(objective_router)
 app.include_router(history_router)
 app.include_router(character_router)
 app.include_router(event_router)
+app.include_router(game_router)

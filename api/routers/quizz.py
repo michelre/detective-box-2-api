@@ -39,14 +39,9 @@ def reset(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    quizzs = db.query(quizz_models.QuizzUser)\
-        .filter_by(user_id=user_id)\
-        .all()
+    quizz = quizz_models.QuizzUser()
+    quizz.reset(db, user_id)
 
-    for q in quizzs:
-        db.delete(q)
-
-    db.commit()
     return 'OK'
 
 

@@ -42,15 +42,9 @@ def reset(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         db: Session = Depends(get_db),
 ):
-    events = db\
-        .query(event_models.EventUser)\
-        .filter_by(user_id=user_id)\
-        .all()
-    for e in events:
-        db.delete(e)
+    event = event_models.EventUser()
+    event.reset(db, user_id)
 
-
-    db.commit()
     return 'OK'
 
 

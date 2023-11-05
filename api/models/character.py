@@ -26,6 +26,16 @@ class RequestCharacter(Base):
     box: Mapped[Box] = relationship("Box")
     character_id = Column(Integer, ForeignKey("character.id"))
 
+    def reset(self, db, user_id):
+        data = db.query(RequestCharacterUser) \
+            .filter_by(user_id=user_id) \
+            .all()
+
+        for d in data:
+            db.delete(d)
+
+        db.commit()
+
 
 class Character(Base):
     __tablename__ = "character"
