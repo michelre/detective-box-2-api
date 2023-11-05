@@ -10,10 +10,14 @@ from api.enums import HelpStatus
 
 class EventUser(Base):
     __tablename__ = "event_user"
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    event_id = Column(Integer, ForeignKey("event.id"), primary_key=True)
-    ref_data = Column(Integer,  primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    event_id = Column(Integer, ForeignKey("event.id"))
+    ref_data = Column(Integer)
     status = Column(String)
+
+    __mapper_args__ = {
+        "primary_key": ['user_id', 'event_id', 'ref_data']
+    }
 
 
 class Event(Base):

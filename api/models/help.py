@@ -7,10 +7,14 @@ from api.enums import HelpStatus
 
 class HelpUser(Base):
     __tablename__ = "help_user"
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    help_id = Column(Integer, ForeignKey("help.id"), primary_key=True)
-    ref_data = Column(String,  primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    help_id = Column(Integer, ForeignKey("help.id"))
+    ref_data = Column(String)
     status = Column(Enum(HelpStatus))
+
+    __mapper_args__ = {
+        "primary_key": ['user_id', 'help_id', 'ref_data']
+    }
 
 class Help(Base):
     __tablename__ = "help"

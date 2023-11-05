@@ -7,10 +7,14 @@ from api.models.box import Box
 
 class HistoryUser(Base):
     __tablename__ = "history_user"
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    history_id = Column(Integer, ForeignKey("history.id"), primary_key=True)
-    ref_data = Column(String,  primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    history_id = Column(Integer, ForeignKey("history.id"))
+    ref_data = Column(String)
     status = Column(Boolean)
+
+    __mapper_args__ = {
+        "primary_key": ['user_id', 'history_id', 'ref_data']
+    }
 
 
 class History(Base):
