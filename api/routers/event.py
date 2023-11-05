@@ -55,6 +55,7 @@ def reset(
 
 
 @router.put(path='/{box_id}')
+@router.put(path='/{box_id}/')
 def update_status(
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         box_id: int,

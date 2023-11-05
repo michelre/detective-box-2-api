@@ -48,7 +48,7 @@ def update(
     path="/{id}",
     response_model=user_schemas.User
 )
-def update(
+def update_user(
         id: int,
         user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
         user: user_schemas.UserUpdate,

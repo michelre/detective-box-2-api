@@ -5,6 +5,7 @@ router = APIRouter(prefix='/documents')
 from api.utils.storage import Storage
 
 
+@router.get('', response_class=FileResponse)
 @router.get('/', response_class=FileResponse)
 def get(
         name
