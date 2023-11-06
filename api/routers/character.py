@@ -76,7 +76,7 @@ def update_status(
     found_data = None
     for idx, d in enumerate(data.data):
         if answer == ",".join(d['ask']):
-            found = 0
+            found = idx
             found_data = d
         # if type(d['ask']) == str and d['ask'] == answer:
         #     found = idx
