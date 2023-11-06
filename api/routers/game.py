@@ -11,6 +11,7 @@ from api.models import history as history_models
 from api.models import character as character_models
 from api.schemas import box as box_schemas
 from api.utils import auth as auth_utils
+from api.models import event as event_models
 from api.enums import BoxStatus
 
 from api.schemas.box import Box
@@ -40,5 +41,8 @@ def reset_all(
 
     character = character_models.RequestCharacter()
     character.reset(db, user_id)
+
+    event = event_models.EventUser()
+    event.reset(db, user_id)
 
     return 'OK'
