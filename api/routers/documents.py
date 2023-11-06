@@ -89,7 +89,7 @@ async def get(
 ) -> StreamingResponse:
     """Send a document"""
     if type and type == 'video':
-        file_path = f"{os.getcwd()}/{name}"
+        file_path = f"{os.getcwd()}/assets/{name}"
         return range_requests_response(
             request, file_path=file_path, content_type="video/mp4"
         )
