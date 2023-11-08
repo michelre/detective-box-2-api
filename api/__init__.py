@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers.status import router as status_router
-from api.routers.users import router as user_router
+from api.routers.box import router as box_router
+from api.routers.character import router as character_router
 from api.routers.db import router as db_router
 from api.routers.documents import router as document_router
-from api.routers.box import router as box_router
-from api.routers.quizz import router as quizz_router
-from api.routers.help import router as help_router
-from api.routers.objective import router as objective_router
-from api.routers.history import router as history_router
-from api.routers.character import router as character_router
 from api.routers.event import router as event_router
 from api.routers.game import router as game_router
+from api.routers.help import router as help_router
+from api.routers.history import router as history_router
+from api.routers.objective import router as objective_router
+from api.routers.quizz import router as quizz_router
+from api.routers.status import router as status_router
+from api.routers.users import router as user_router
 
 app = FastAPI()
 
