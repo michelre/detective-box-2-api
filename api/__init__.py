@@ -13,6 +13,7 @@ from api.routers.objective import router as objective_router
 from api.routers.quizz import router as quizz_router
 from api.routers.status import router as status_router
 from api.routers.users import router as user_router
+from api.routers.exports import router as exports_router
 
 app = FastAPI()
 
@@ -36,3 +37,4 @@ app.include_router(history_router)
 app.include_router(character_router)
 app.include_router(event_router)
 app.include_router(game_router)
+app.include_router(exports_router)
