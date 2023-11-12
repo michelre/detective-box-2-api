@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 
 from api.database import get_db
 from api.models import history as history_models
@@ -36,6 +37,32 @@ def get_by_box(
             d['status'] = exists.status
 
     return history
+
+
+@router.get(path='')
+@router.get(path='/')
+def get_by_ids(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        ids: str,
+        db: Session = Depends(get_db),
+):
+    ids = ids.split(',')
+    data = db \
+        .query(history_models.HistoryUser) \
+        .filter_by(user_id=user_id) \
+        .where(
+            or_(history_models.HistoryUser.ref_data == id for id in ids)
+        ) \
+        .all()
+
+    found_ids = [e.ref_data for e in data]
+
+    obj = {}
+    for id in ids:
+        obj[id] = id in found_ids
+
+    return obj
+
 
 
 @router.put(path='/reset')

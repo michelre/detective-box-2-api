@@ -13,3 +13,4 @@ pydantic-settings
 boto3
 random-password-generator
 mailjet-rest
+sse-starlette

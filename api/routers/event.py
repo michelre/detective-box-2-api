@@ -1,9 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from sse_starlette.sse import EventSourceResponse
+from starlette.concurrency import run_in_threadpool
 
 from api.utils.events import event_generator, create_client_queue
 
@@ -22,7 +24,8 @@ async def stream(
 ):
     user_id = auth_utils.get_connected_user_id(token)
     create_client_queue(user_id)
-    return EventSourceResponse(event_generator(request, user_id))
+    rst = await run_in_threadpool(event_generator, request, user_id)
+    #return EventSourceResponse(rst)
 
 
 @router.get(path='/{box_id}')

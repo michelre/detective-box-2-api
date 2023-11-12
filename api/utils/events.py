@@ -23,7 +23,8 @@ async def event_generator(request: Request, user_id):
 
         queue = clients[user_id]
         event = await queue.get()
-        yield {
-            "event": "update",
-            "data": event
-        }
+        if event:
+            yield {
+                "event": "update",
+                "data": event
+            }
