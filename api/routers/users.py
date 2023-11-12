@@ -11,10 +11,34 @@ from api.schemas import auth as auth_schemas
 from api.schemas import users as user_schemas
 from api.utils import auth as auth_utils
 from api.config import settings
-
+import datetime
 
 router = APIRouter(prefix="/users")
 
+
+@router.put('/end_box/{id}')
+def update_end_box1(
+        user_id: Annotated[int, Depends(auth_utils.get_connected_user_id)],
+        id: int,
+        db: Session = Depends(get_db),
+):
+    user = db.query(user_models.User)\
+        .filter_by(id=user_id)\
+        .first()
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    if id == 1:
+        user.end_box1 = datetime.datetime.now()
+    if id == 2:
+        user.end_box2 = datetime.datetime.now()
+    if id == 3:
+        user.end_box3 = datetime.datetime.now()
+        
+    db.commit()
+
+    return 'OK'
 
 @router.put(
     path="/password",
@@ -201,3 +225,4 @@ def password_forgot(
     db.commit()
 
     return 'OK'
+

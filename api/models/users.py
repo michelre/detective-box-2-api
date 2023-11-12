@@ -1,10 +1,6 @@
-from sqlalchemy.orm import relationship, Mapped
-from sqlalchemy import Column, String, Integer, PrimaryKeyConstraint, ForeignKey, Enum
-from api.database import Base
-from api.enums import BoxStatus
-from api.models.box import Box
+from sqlalchemy import Column, String, Integer, DateTime
 
-from typing import List
+from api.database import Base
 
 
 class User(Base):
@@ -14,4 +10,7 @@ class User(Base):
     email = Column(String)
     name = Column(String)
     password = Column(String)
+    end_box1 = Column(DateTime)
+    end_box2 = Column(DateTime)
+    end_box3 = Column(DateTime)
     # boxes: Mapped[List[Box]] = relationship(UserBox)
