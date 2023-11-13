@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import FileResponse
 from mailjet_rest import Client
 from sqlalchemy.orm import Session
 import csv
@@ -30,38 +31,7 @@ def user(
         header = ['id', 'email', 'name', 'end_box1', 'end_box2', 'end_box3']
         writer.writerow(header)
         writer.writerows([[u.id, u.email, u.name, u.end_box1, u.end_box2, u.end_box3] for u in users])
-        f.seek(0)
-
-        mailjet_api = Client(auth=(settings.mail_key, settings.mail_secret), version='v3.1')
-        data = {
-            'Messages': [
-                {
-                    "From": {
-                        "Email": "contact@detectivebox.fr",
-                        "Name": "Detective Box"
-                    },
-                    "To": [
-                        {
-                            "Email": "remi.michel38@gmail.com",
-                            "Name": "Rémi Michel"
-                        }
-                    ],
-                    "Subject": "Export des utilisateurs",
-                    "TextPart": f"...",
-                    "HTMLPart": f"...",
-                    "Attachments": [
-                        {
-                                "ContentType": "text/csv",
-                                "Filename": "users.csv",
-                                "Base64Content": f"{base64.b64encode(s=f.read().encode('ascii'))}"
-                        }
-                    ]
-                }
-            ]
-        }
-
-        res = mailjet_api.send.create(data=data)
         f.close()
 
-    return 'OK'
+    return FileResponse('/tmp/users.csv', filename='users.csv')
 
