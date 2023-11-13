@@ -1,3 +1,4 @@
+import asyncio
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status, Request
@@ -15,18 +16,6 @@ from api.schemas import event as event_schemas
 from api.utils import auth as auth_utils
 
 router = APIRouter(prefix="/events")
-
-
-@router.get('/stream')
-async def stream(
-        request: Request,
-        token: str
-):
-    user_id = auth_utils.get_connected_user_id(token)
-    create_client_queue(user_id)
-    rst = await run_in_threadpool(event_generator, request, user_id)
-    #return EventSourceResponse(rst)
-
 
 @router.get(path='/{box_id}')
 def get_by_box_id(

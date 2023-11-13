@@ -1,5 +1,6 @@
 from fastapi import Request
 import asyncio
+import time
 
 clients = {}
 
@@ -15,16 +16,15 @@ async def new_event(event, user_id):
             await queue.put(event)
 
 
+async def get_event(user_id):
+    queue = clients[user_id]
+    return await queue.get()
+
+
 async def event_generator(request: Request, user_id):
     while True:
         if await request.is_disconnected():
             delattr(clients, user_id)
             break
 
-        queue = clients[user_id]
-        event = await queue.get()
-        if event:
-            yield {
-                "event": "update",
-                "data": event
-            }
+        yield await get_event(user_id)

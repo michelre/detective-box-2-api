@@ -29,6 +29,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app_stream.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(user_router)
 app.include_router(status_router)
 app.include_router(db_router)
@@ -44,3 +52,14 @@ app.include_router(game_router)
 app.include_router(exports_router)
 
 app_stream.include_router(stream_router)
+
+async def run():
+    configs = [Config(app, port=8000), Config(app_stream, port=8001)]
+    coros = [Server(c).serve() for c in configs]
+
+    await asyncio.gather(*coros)
+
+
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
