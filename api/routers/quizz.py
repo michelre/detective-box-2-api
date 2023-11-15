@@ -28,10 +28,10 @@ def get_by_id(
         .filter_by(quizz_id=quizz.id)\
         .first()
 
-    if not exists or not exists.status:
-        return quizz
+    if exists:
+        quizz.status = exists.status
 
-    return None
+    return quizz
 
 
 @router.put(path='/reset')

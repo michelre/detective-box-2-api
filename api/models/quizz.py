@@ -31,3 +31,4 @@ class Quizz(Base):
     answers = Column(JSONB, default='[]')
     box_id = Column(Integer, ForeignKey("box.id"))
     box: Mapped[Box] = relationship("Box")
+    status = Column(Boolean, default=False)
