@@ -25,7 +25,8 @@ def get_by_id(
         raise HTTPException(status_code=404)
 
     exists = db.query(quizz_models.QuizzUser)\
-        .filter_by(quizz_id=quizz.id)\
+        .filter_by(quizz_id=quizz.id) \
+        .filter_by(user_id=user_id) \
         .first()
 
     if exists:
