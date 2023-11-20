@@ -10,6 +10,7 @@ from api.models import users as user_models
 from api.schemas import auth as auth_schemas
 from api.schemas import users as user_schemas
 from api.utils import auth as auth_utils
+from api.utils.mail import Mail
 from api.config import settings
 import datetime
 
@@ -199,29 +200,13 @@ def password_forgot(
     temp_password = pwo.generate()
     exists.password = auth_utils.get_password_hash(temp_password)
 
+    mail = Mail()
+    receiver = 'remi.michel38@gmail.com'
+    mail.send(
+        receiver=receiver,
+        message=mail.mail_password_forgot(receiver, temp_password)
+    )
 
-    mailjet_api = Client(auth=(settings.mail_key, settings.mail_secret), version='v3.1')
-    data = data = {
-      'Messages': [
-                    {
-                            "From": {
-                                    "Email": "contact@detectivebox.fr",
-                                    "Name": "Detective Box"
-                            },
-                            "To": [
-                                    {
-                                            "Email": exists.email,
-                                            "Name": exists.name
-                                    }
-                            ],
-                            "Subject": "Réinitialisation de votre mot de passe",
-                            "TextPart": f"Bonjour {exists.name}, Voici votre mot de passe temporaire {temp_password}",
-                            "HTMLPart": f"<h3>Bonjour {exists.name},</h3><p>Votre mot de passe temporaire: {temp_password}</p>"
-                    }
-            ]
-    }
-
-    mailjet_api.send.create(data=data)
     db.commit()
 
     return 'OK'

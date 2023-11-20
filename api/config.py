@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     aws_bucket: str
     mail_key: str
     mail_secret: str
+    mail_host: str
+    mail_port: int
     model_config = ConfigDict(env_file=".env")
 
 

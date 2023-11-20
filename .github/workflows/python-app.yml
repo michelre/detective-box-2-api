@@ -39,6 +39,8 @@ jobs:
         echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
         echo "MAIL_KEY=${{ secrets.MAIL_KEY }}" >> .env
         echo "MAIL_SECRET=${{ secrets.MAIL_SECRET }}" >> .env
+        echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
+        echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> .env
     - name: Lint with flake8
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
