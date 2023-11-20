@@ -23,6 +23,10 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
+- Running migrations
+```
+alembic upgrade head
+```
 
 ## Start in dev mode
 Two apps can be loaded:
