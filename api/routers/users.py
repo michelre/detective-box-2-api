@@ -36,7 +36,7 @@ def update_end_box1(
         user.end_box2 = datetime.datetime.now()
     if id == 3:
         user.end_box3 = datetime.datetime.now()
-        
+
     db.commit()
 
     return 'OK'
@@ -201,7 +201,7 @@ def password_forgot(
     exists.password = auth_utils.get_password_hash(temp_password)
 
     mail = Mail()
-    receiver = 'remi.michel38@gmail.com'
+    receiver = exists.email
     mail.send(
         receiver=receiver,
         message=mail.mail_password_forgot(receiver, temp_password)
