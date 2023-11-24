@@ -22,7 +22,9 @@ class Mail:
         text = f"""
             Bonjour
             
-            Votre mot de passe temporaire: {passwd} 
+            Votre mot de passe temporaire: {passwd}
+            Utilisez ce mot de passe temporaire pour vous connecter.
+            Une fois sur l'interface, rendez-vous dans le menu PROFIL et cliquez sur "Paramètres" pour modifier votre mot de passe
         """
 
         html = f"""
@@ -31,6 +33,8 @@ class Mail:
             <h1>Bonjour,</h1>
             
             <p>Votre mot de passe temporaire: {passwd}</p>
+            <p>Utilisez ce mot de passe temporaire pour vous connecter.</p>
+            <p>Une fois sur l'interface, rendez-vous dans le menu PROFIL et cliquez sur "Paramètres" pour modifier votre mot de passe</p>
           </body>
         </html>
         """
