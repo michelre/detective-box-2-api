@@ -55,7 +55,7 @@ app_stream.include_router(stream_router)
 
 async def run():
     #configs = [Config(app, port=8000), Config(app_stream, port=8001)]
-    configs = [Config(app, port=8000)]
+    configs = [Config(app_stream, port=8000)]
     coros = [Server(c).serve() for c in configs]
 
     await asyncio.gather(*coros)
