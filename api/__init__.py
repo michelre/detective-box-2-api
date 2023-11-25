@@ -52,3 +52,4 @@ app.include_router(game_router)
 app.include_router(exports_router)
 
 app_stream.include_router(stream_router)
+app_stream.include_router(status_router)
