@@ -7,7 +7,7 @@ python-jose[cryptography]
 passlib[bcrypt]
 flake8
 black
-psycopg2
+psycopg2-binary
 pydantic[email]
 pydantic-settings
 boto3
