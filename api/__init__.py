@@ -19,23 +19,23 @@ from api.routers.exports import router as exports_router
 from api.routers.stream import router as stream_router
 
 app = FastAPI()
-app_stream = FastAPI()
+# app_stream = FastAPI()
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-#
-# app_stream.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+origins = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173',
+    'https://app2.detectivebox.fr',
+    'https://detectivebox-2-app-nihbf.ondigitalocean.app',
+    'https://dev-detectivebox-2-b4csu.ondigitalocean.app'
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(user_router)
 app.include_router(status_router)
@@ -51,4 +51,4 @@ app.include_router(event_router)
 app.include_router(game_router)
 app.include_router(exports_router)
 
-app_stream.include_router(stream_router)
+# app_stream.include_router(stream_router)
