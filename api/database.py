@@ -23,3 +23,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def close_database_connections():
+    print("closing all connections to the database")
+    engine.dispose()

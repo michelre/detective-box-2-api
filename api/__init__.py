@@ -18,6 +18,9 @@ from api.routers.users import router as user_router
 from api.routers.exports import router as exports_router
 from api.routers.stream import router as stream_router
 
+from api.database import close_database_connections
+
+
 app = FastAPI()
 # app_stream = FastAPI()
 
@@ -53,3 +56,7 @@ app.include_router(game_router)
 app.include_router(exports_router)
 
 # app_stream.include_router(stream_router)
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    close_database_connections()
