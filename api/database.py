@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 
 from api.config import settings
 
@@ -21,6 +22,9 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except SQLAlchemyError as e:
+        db.rollback()  # Rollback on exception
+        raise e
     finally:
         db.close()
 
