@@ -9,11 +9,11 @@ DATABASE_URI = settings.database_uri
 
 engine = create_engine(
     DATABASE_URI,
-    pool_size=20,
-    max_overflow=-1
+    pool_size=15,
+    max_overflow=5
 )
 
-SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
