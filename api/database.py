@@ -24,7 +24,10 @@ def get_db():
         yield db
     except SQLAlchemyError as e:
         db.rollback()  # Rollback on exception
-        raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
     finally:
         db.close()
 
